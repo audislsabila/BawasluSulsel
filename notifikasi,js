@@ -1,0 +1,42 @@
+// Fungsi untuk menandai notifikasi sebagai sudah dibaca
+$(document).on('click', '.notification-item', function(e) {
+    var notificationId = $(this).data('id');
+    
+    $.ajax({
+        url: 'mark_notification_read.php',
+        method: 'POST',
+        data: { id: notificationId },
+        success: function(response) {
+            // Refresh counter notifikasi
+            updateNotificationCount();
+        }
+    });
+});
+
+// Fungsi untuk update counter notifikasi
+function updateNotificationCount() {
+    $.ajax({
+        url: 'get_notification_count.php',
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                var count = response.count;
+                var $badge = $('.nav-link .badge');
+                
+                if (count > 0) {
+                    $badge.text(count).show();
+                } else {
+                    $badge.hide();
+                }
+            }
+        }
+    });
+}
+
+// Fungsi untuk menampilkan waktu lalu
+function timeAgo(dateTime) {
+    // Implementasi fungsi timeAgo seperti sebelumnya
+}
+
+// Periksa notifikasi baru setiap 30 detik
+setInterval(updateNotificationCount, 30000);
